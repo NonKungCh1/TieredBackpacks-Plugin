@@ -1,11 +1,12 @@
 package com.nonkungch.tieredbackpacks;
 
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64coder.Base64Coder;
+// *** เปลี่ยนมาใช้ java.util.Base64 แทน ***
+import java.util.Base64; 
+// **********************************
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,7 +34,9 @@ public class InventorySerializer {
             }
             
             dataOutput.close();
-            return Base64Coder.encodeLines(outputStream.toByteArray());
+            
+            // *** ใช้วิธีเข้ารหัสแบบใหม่ (Standard Encoding) ***
+            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
             
         } catch (Exception e) {
             throw new IllegalStateException("ไม่สามารถบันทึก Inventory เป็น Base64 ได้", e);
@@ -48,7 +51,8 @@ public class InventorySerializer {
      */
     public static ItemStack[] inventoryFromBase64(String data) throws IOException {
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+            // *** ใช้วิธีถอดรหัสแบบใหม่ (Standard Decoding) ***
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             
             // อ่านขนาดของ Inventory
