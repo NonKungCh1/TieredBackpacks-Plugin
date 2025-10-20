@@ -16,9 +16,15 @@ public final class TieredBackpacks extends JavaPlugin {
     public static ItemStack mediumBackpack;
     public static ItemStack largeBackpack;
 
+    // *** เพิ่ม NamespacedKey สำหรับเก็บข้อมูลกระเป๋า ***
+    public static NamespacedKey inventoryKey;
+
     @Override
     public void onEnable() {
         getLogger().info("TieredBackpacks Plugin has been enabled!");
+
+        // *** สร้าง Key สำหรับเก็บข้อมูล ***
+        inventoryKey = new NamespacedKey(this, "backpack_inventory_data");
 
         // สร้างไอเทมกระเป๋าทั้ง 3 ระดับ
         createBackpackItems();
@@ -29,14 +35,14 @@ public final class TieredBackpacks extends JavaPlugin {
         // ลงทะเบียน Listener เพื่อให้ปลั๊กอินทำงานกับผู้เล่นได้
         Bukkit.getServer().getPluginManager().registerEvents(new BackpackListener(this), this);
     }
-
+    
     private void createBackpackItems() {
         // --- กระเป๋าขั้นที่ 1 (เล็ก) ---
-        smallBackpack = new ItemStack(Material.LEATHER_HORSE_ARMOR); // ใช้ไอเทมที่ไม่ค่อยมีคนใช้เพื่อไม่ให้ซ้ำ
+        smallBackpack = new ItemStack(Material.LEATHER_HORSE_ARMOR); 
         ItemMeta smallMeta = smallBackpack.getItemMeta();
         smallMeta.setDisplayName("§aกระเป๋าเป้ขั้นที่ 1 (เล็ก)");
         smallMeta.setLore(Arrays.asList("§7ความจุ: 9 ช่อง", "§7คลิกขวาเพื่อเปิด"));
-        smallMeta.setCustomModelData(1); // สำหรับ Resource Pack (ถ้ามี)
+        smallMeta.setCustomModelData(1); 
         smallBackpack.setItemMeta(smallMeta);
 
         // --- กระเป๋าขั้นที่ 2 (กลาง) ---
@@ -55,15 +61,13 @@ public final class TieredBackpacks extends JavaPlugin {
         largeMeta.setCustomModelData(3);
         largeBackpack.setItemMeta(largeMeta);
     }
-
+    
     private void registerRecipes() {
         // --- สูตรเผา ---
-        // เผาเนื้อซอมบี้ -> หนังวัว
         FurnaceRecipe fleshToLeather = new FurnaceRecipe(new NamespacedKey(this, "flesh_to_leather"),
-                new ItemStack(Material.LEATHER), Material.ROTTEN_FLESH, 0.5f, 200); // 200 ticks = 10 วินาที
+                new ItemStack(Material.LEATHER), Material.ROTTEN_FLESH, 0.5f, 200); 
         Bukkit.addRecipe(fleshToLeather);
 
-        // เผาหนังวัว -> หนังกระต่าย
         FurnaceRecipe leatherToHide = new FurnaceRecipe(new NamespacedKey(this, "leather_to_hide"),
                 new ItemStack(Material.RABBIT_HIDE), Material.LEATHER, 0.3f, 200);
         Bukkit.addRecipe(leatherToHide);
@@ -89,7 +93,6 @@ public final class TieredBackpacks extends JavaPlugin {
                 "III"
         );
         mediumRecipe.setIngredient('I', Material.IRON_INGOT);
-        // ใช้ RecipeChoice เพื่อให้แน่ใจว่าต้องใช้กระเป๋าที่เราสร้างขึ้นเท่านั้น
         mediumRecipe.setIngredient('B', new RecipeChoice.ExactChoice(smallBackpack));
         Bukkit.addRecipe(mediumRecipe);
 
